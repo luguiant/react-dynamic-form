@@ -3,16 +3,7 @@ import { Button } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import InputComponent from '../Input/index';
 import { ValidatorForm } from 'react-material-ui-form-validator';
-import styles from '../../App.css';
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        '& .MuiTextField-root': {
-            margin: theme.spacing(1),
-            width: 200,
-        },
-    },
-}));
+import SelectValidator from '../Select/index';
 
 class FormComponent extends Component{
 
@@ -58,6 +49,7 @@ class FormComponent extends Component{
     onChange = (event) => {
         const { data } = this.state;
         data[event.target.name] = event.target.value;
+        console.log(this.state);
         this.setState({ data });
     }
 
@@ -87,6 +79,43 @@ class FormComponent extends Component{
         this.setState({ disabled: !this.form.isFormValid() });
     };
 
+    createInput(index, field, data){
+        return <InputComponent
+                                key={index}
+                                onBlur={this.handleBlur}
+                                ref={this[`${field.name}Ref`]}
+                                label={field.label}
+                                onChange={this.onChange}
+                                name={field.name}
+                                value={field.values}
+                                type={field.elementType}
+                                validatorListener={this.validatorListener}
+                                validators={field.validations}
+                                errorMessages={field.errorsMsn}
+                                value={data[field.name] || ''}
+                            />
+    }
+
+    createSelect(index, field, data){
+        return <SelectValidator
+            key={index}
+            onBlur={this.handleBlur}
+            ref={this[`${field.name}Ref`]}
+            label={field.label}
+            onChange={this.onChange}
+            name={field.name}
+            values={field.values}
+            value={this.state.data[field.name]}
+            validatorListener={this.validatorListener}
+            validators={field.validations}
+            errorMessages={field.errorsMsn}
+        />
+    }
+
+    createButton(index, field, disabled){
+        return <Button key={index} disabled={disabled} type={field.elementType}>{field.label}</Button>
+    }
+
     render() {
         const { data, disabled } = this.state;
         const { classes } = this.props;
@@ -95,7 +124,6 @@ class FormComponent extends Component{
             <ValidatorForm
                 ref={node => (this.form = node)}
                 instantValidate={true}
-                className="form-data"
                 onSubmit={this.handleSubmit}
                 onError={this.handleError}
             >
@@ -103,26 +131,25 @@ class FormComponent extends Component{
                     this.formConfig.map(
                         (field, index) =>{
 
-                            return <InputComponent
-                                key={index}
-                                onBlur={this.handleBlur}
-                                ref={this[`${field.name}Ref`]}
-                                label={field.label}
-                                onChange={this.onChange}
-                                name={field.name}
-                                type="text"
-                                validatorListener={this.validatorListener}
-                                validators={field.validations}
-                                errorMessages={field.errorsMsn}
-                                value={data[field.name] || ''}
-                            />
+                            switch(field.type) {
+                                case 'field':
+                                    return this.createInput(index, field, data);
+
+                                case 'button':
+                                    return this.createButton(index, field, disabled);
+
+                                case 'selectField':
+                                    return this.createSelect(index, field, data);
+
+                            }
+
                         }
                     )
                 }
-                <Button disabled={disabled} type="submit">Submit</Button>
+
             </ValidatorForm>
         );
     }
 }
 
-export default withStyles(useStyles)(FormComponent);
+export default (FormComponent);

@@ -4,6 +4,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
+import styled from './App.css';
 
 import HomeComponent from './pages/Home';
 

@@ -1,10 +1,6 @@
 import React, {Component} from 'react';
-import { Button } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import InputComponent from '../../components/Input';
 import FormComponent from "../../components/Form";
-import { ValidatorForm } from 'react-material-ui-form-validator';
-import styles from '../../App.css';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -21,8 +17,9 @@ class HomeComponent extends Component{
         {
             id: 'typeVehicle',
             name: 'typeVehicle',
-            type: 'text',
-            value: ['Carro','Moto', 'Bicicleta'],
+            type: 'selectField',
+            elementType: 'text',
+            values: [ { value: 'carro', label:'Carro'}, { value:'moto', label:'Moto'}, { value: 'bicicleta', label: 'Bicicleta'}],
             validations: ['required', 'matchRegexp:(?:^|\\W)moto(?:$|\\W)|(?:^|\\W)carro(?:$|\\W)|(?:^|\\W)bicicleta(?:$|\\W)'],
             errorsMsn: ['El tipo es requerido', 'El valor ingresado no es valido'],
             label: 'Tipo de vehiculo',
@@ -32,14 +29,27 @@ class HomeComponent extends Component{
         {
             id: 'picture',
             name: 'picture',
-            type: 'text',
-            value: null,
+            type: 'field',
+            elementType: 'text',
+            values: null,
             validations: ['required'],
             errorsMsn: ['El la foto es requerida'],
             label: 'Foto del vehiculo',
             classField: 'test1',
             classContainer: 'test1Container'
         },
+        {
+            id: 'buttonSubmit',
+            name: 'buttonSubmit',
+            type: 'button',
+            elementType: 'submit',
+            values: 'submit',
+            validations: [],
+            errorsMsn: [],
+            label: 'Registrar',
+            classField: null,
+            classContainer: null
+        }
     ];
 
 

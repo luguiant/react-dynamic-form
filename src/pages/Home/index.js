@@ -1,43 +1,74 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import { Button } from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import InputComponent from '../../components/Input';
+import FormComponent from "../../components/Form";
+import { ValidatorForm } from 'react-material-ui-form-validator';
+import styles from '../../App.css';
 
-import { getDemoRequest } from '../../redux/actions/demoActions';
+const useStyles = makeStyles(theme => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: 200,
+        },
+    },
+}));
 
-import User from '../../components/User';
+class HomeComponent extends Component{
 
-class Home extends Component {
-	componentWillMount() {
-		this.props.getDemoRequest('hey');
-	}
-	render() {
-		const { users } = this.props;
+    formStructure = [
+        {
+            id: 'typeVehicle',
+            name: 'typeVehicle',
+            type: 'text',
+            value: ['Carro','Moto', 'Bicicleta'],
+            validations: ['required', 'matchRegexp:(?:^|\\W)moto(?:$|\\W)|(?:^|\\W)carro(?:$|\\W)|(?:^|\\W)bicicleta(?:$|\\W)'],
+            errorsMsn: ['El tipo es requerido', 'El valor ingresado no es valido'],
+            label: 'Tipo de vehiculo',
+            classField: 'test1',
+            classContainer: 'test1Container'
+        },
+        {
+            id: 'picture',
+            name: 'picture',
+            type: 'text',
+            value: null,
+            validations: ['required'],
+            errorsMsn: ['El la foto es requerida'],
+            label: 'Foto del vehiculo',
+            classField: 'test1',
+            classContainer: 'test1Container'
+        },
+    ];
 
-		let items = [];
-		if (typeof users !== 'undefined') {
-			items = users.map((value, index) => {
-				return <User key={index} {...value} />;
-			});
-		}
-		return <div>{items}</div>;
-	}
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: {
+                picture: '',
+                typeVehicle: ''
+            },
+        }
+    }
+
+    handlerSubmitForm(e){
+        e.preventDefault();
+        if(this.state && !this.state.disabled) {
+            console.log('consumo del api');
+        }
+    }
+
+    render() {
+        return (
+            <FormComponent
+                handleSubmitForm={this.handlerSubmitForm}
+                formState={this.state}
+                formConfig={this.formStructure}
+            ></FormComponent>
+        );
+    }
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-	return {
-		getDemoRequest: payload => {
-			dispatch(getDemoRequest(payload));
-		}
-	};
-};
-const mapStateToProps = state => {
-	return {
-		users: state.demoReducer[0]
-	};
-};
-
-Home.propTypes = {
-	dispatch: PropTypes.func
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default withStyles(useStyles)(HomeComponent);
